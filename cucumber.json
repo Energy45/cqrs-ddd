@@ -1,0 +1,7 @@
+{
+    "default": {
+        "paths": ["features/"],
+        "import": ["features/step_definitions/*.ts"],
+        "loader": ["ts-node/esm"]
+    }
+}
