@@ -13,7 +13,8 @@
   },
   "scripts": {
     "test": "NODE_OPTIONS=--loader=ts-node/esm cucumber-js --profile default --config cucumber.json",
-    "start": "tsx src/index.ts"
+    "start": "tsx src/index.ts",
+    "demo": "tsx src/demo.ts"
   },
   "dependencies": {
     "commander": "^13.1.0"

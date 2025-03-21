@@ -7,11 +7,9 @@ export class FleetInMemoryRepository implements IFleetRepository {
 
     async save(entity: Fleet): Promise<void> {
         this.fleets.set(entity.getId(), entity);
-        console.log('saving fleet', entity);
     }
 
     async findById(id: string): Promise<Fleet | null> {
-        console.log('finding fleet', id, this.fleets.get(id));
         return this.fleets.get(id) || null;
     }
 
