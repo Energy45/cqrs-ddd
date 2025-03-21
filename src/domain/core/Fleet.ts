@@ -28,13 +28,13 @@ export class Fleet extends Entity {
     }
 
     public getVehicleByNumberPlate(numberPlate: string): Vehicle | null {
-        return this.vehicles.find(vehicle => vehicle.getPlateNumber() === numberPlate) || null;
+        return this.vehicles.find((vehicle: Vehicle) => vehicle.getPlateNumber() === numberPlate) || null;
     }
 
     public static create(id: string, userId: string, vehicles: Record<string, any>[]): Fleet {
         const fleet = new Fleet(userId, id);
         if (vehicles) {
-            vehicles.forEach(vehicle => fleet.addVehicle(Vehicle.create(vehicle.plateNumber, vehicle.location, vehicle.id)));
+            vehicles.forEach((vehicle: Record<string, any>) => fleet.addVehicle(Vehicle.create(vehicle.plateNumber, vehicle.location, vehicle.id)));
         }
         return fleet;
     }

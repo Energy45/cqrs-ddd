@@ -13,7 +13,8 @@
       "rootDir": "./src",
       "noEmit": true,
       "types": ["node"],
-      "incremental": true
+      "incremental": true,
+      "noImplicitAny": false
     },
     "include": ["src/**/*.ts"],
     "exclude": ["node_modules"]
