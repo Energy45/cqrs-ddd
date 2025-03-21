@@ -4,4 +4,5 @@ import type { IRepository } from "../interfaces/IRepository";
 
 export interface IFleetRepository extends IRepository<Fleet> {
     getVehicleByNumberPlate(fleetId: string, numberPlate: string): Promise<Vehicle | null>;
+    dump(): Promise<void>;
 }

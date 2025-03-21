@@ -14,7 +14,6 @@ const program = new Command();
 
 const fleetCommand = program.command('fleet');
 
-//Initialize repositories
 const fleetRepository = new FleetJsonRepository('fleets.json');
 
 
@@ -39,7 +38,6 @@ fleetCommand.command('register-vehicle')
                 console.error(error.message);
                 process.exit(1);
             }
-            //Unexpected error
             throw error;
         }
     }
@@ -62,7 +60,6 @@ fleetCommand.command('localize-vehicle')
                 console.error(error.message);
                 process.exit(1);
             }
-            //Unexpected error
             throw error;
         }
     });

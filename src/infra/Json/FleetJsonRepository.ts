@@ -12,7 +12,7 @@ export class FleetJsonRepository implements IFleetRepository {
 
     async save(fleet: Fleet): Promise<void> {
         const dataRead = await this.loadDataDeserialize();
-        const realData = dataRead.filter(fleetTmp => fleetTmp.getUserId() !== fleet.getUserId());
+        const realData = dataRead.filter(fleetTmp => fleetTmp.getId() !== fleet.getId());
         realData.push(fleet);
         await this.database.saveDataToDisk(realData);
     }
@@ -41,5 +41,9 @@ export class FleetJsonRepository implements IFleetRepository {
 
     private async loadDataDeserialize(): Promise<Fleet[]> {
         return (await this.database.loadDataFromDisk()).map<Fleet>(item => Fleet.create(item.id, item.userId, item.vehicles));
+    }
+
+    async dump(): Promise<void> {
+        await this.database.saveDataToDisk([]);
     }
 }

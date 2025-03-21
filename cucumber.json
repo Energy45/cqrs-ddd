@@ -3,5 +3,17 @@
         "paths": ["src/tests/features/"],
         "import": ["src/tests/features/step_definitions/*.ts"],
         "loader": ["ts-node/esm"]
+    },
+    "json": {
+        "paths": ["src/tests/features/"],
+        "import": ["src/tests/features/step_definitions/*.ts"],
+        "loader": ["ts-node/esm"],
+        "tags": "@critical"
+    },
+    "inmemory": {
+        "paths": ["src/tests/features/"],
+        "import": ["src/tests/features/step_definitions/*.ts"],
+        "loader": ["ts-node/esm"],
+        "tags": "not @critical"
     }
 }

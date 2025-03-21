@@ -16,6 +16,6 @@ export class ParkVehicleCommandHandler implements ICommandHandler<ParkVehicleCom
             throw new Error("Vehicle not found");
         }
         vehicle.park(new Location(command.getLatitude(), command.getLongitude(), command.getAltitude()));
-        this.fleetRepository.save(fleet);
+        await this.fleetRepository.save(fleet);
     }
 }

@@ -28,4 +28,8 @@ export class FleetInMemoryRepository implements IFleetRepository {
         }
         return fleet.getVehicleByNumberPlate(numberPlate);
     }
+
+    async dump(): Promise<void> {
+        this.fleets.clear();
+    }
 }

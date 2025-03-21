@@ -13,6 +13,8 @@
   },
   "scripts": {
     "test": "NODE_OPTIONS=\"--loader=ts-node/esm\" TS_NODE_PROJECT=ts-node.config.json cucumber-js --profile default --config cucumber.json",
+    "test:json": "NODE_OPTIONS=\"--loader=ts-node/esm\" TS_NODE_PROJECT=ts-node.config.json CUCUMBER_PROFILE=json cucumber-js --profile json --config cucumber.json",
+    "test:inmemory": "NODE_OPTIONS=\"--loader=ts-node/esm\" TS_NODE_PROJECT=ts-node.config.json CUCUMBER_PROFILE=inmemory cucumber-js --profile inmemory --config cucumber.json",
     "start": "tsx src/index.ts",
     "demo": "tsx src/demo.ts"
   },
