@@ -11,6 +11,11 @@ To launch step 1 with in memory repository you have to launch the followin comma
 pnpm demo
 ```
 
+Cucumber test with in memory repository : 
+```
+pnpm test
+```
+
 ## Step 2
 For the step 2, i chose to persist data in json repository. I have used commanderjs for help me to handle args. 
 Launch following commands to start the cli : 
@@ -18,6 +23,12 @@ Launch following commands to start the cli :
 pnpm start fleet create <userId>
 pnpm start fleet register-vehicle <vehiclePlateNumber>
 pnpm start fleet localize-vehicle <fleetId> <vehiclePlateNumber> lat lng [alt]
+```
+
+Two ways to launch tests, persist data into json file for critical scenario and in memory for the other :
+```
+pnpm test:json
+pnpm test:inmemory
 ```
 
 ## Step 3
