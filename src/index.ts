@@ -1,49 +1,70 @@
 import { CreateFleetCommand } from "./app/commands/CreateFleet/CreateFleetCommand";
 import { CreateFleetCommandHandler } from "./app/commands/CreateFleet/CreateFleetCommandHandler";
-import { CreateUserCommand } from "./app/commands/CreateUser/CreateUserCommand";
-import { CreateUserCommandHandler } from "./app/commands/CreateUser/CreateUserCommandHandler";
-import { ParkVehicleCommand } from "./app/commands/ParkVehicle/ParkVehicleCommand";
-import { ParkVehicleCommandHandler } from "./app/commands/ParkVehicle/ParkVehicleCommandHandler";
 import { RegisterVehicleCommand } from "./app/commands/RegisterVehicle/RegisterVehicleCommand";
 import { RegisterVehicleCommandHandler } from "./app/commands/RegisterVehicle/RegisterVehicleCommandHandler";
-import { FleetInMemoryRepository } from "./infra/FleetInMemoryRepository";
-import { UserInMemoryRepository } from "./infra/UserInMemoryRepository";
+import { Command } from "commander";
+import { FleetJsonRepository } from "./infra/Json/FleetJsonRepository";
+import { FleetNotFoundException } from "./domain/exceptions/FleetNotFoundException";
+import { VehicleHasAlreadyBeenRegisteredException } from "./domain/exceptions/VehicleHasAlreadyBeenRegisteredException";
+import { ParkVehicleCommandHandler } from "./app/commands/ParkVehicle/ParkVehicleCommandHandler";
+import { ParkVehicleCommand } from "./app/commands/ParkVehicle/ParkVehicleCommand";
+import { VehicleHasAlreadyBeenParkedHere } from "./domain/exceptions/VehicleHasAlreadyBeenParkedHere";
 
-const userRepository = new UserInMemoryRepository();
-const fleetRepository = new FleetInMemoryRepository();
-const createUserCommandHandler = new CreateUserCommandHandler(userRepository);
+const program = new Command();
 
-const userCreated = createUserCommandHandler.execute(new CreateUserCommand());
+const fleetCommand = program.command('fleet');
 
-const createFleetCommandHandler = new CreateFleetCommandHandler(userRepository, fleetRepository);
+//Initialize repositories
+const fleetRepository = new FleetJsonRepository('fleets.json');
 
-const fleetCreated = createFleetCommandHandler.execute(new CreateFleetCommand(userCreated.getId()));
 
-const registerVehicleCommandHandler = new RegisterVehicleCommandHandler(fleetRepository, userRepository);
 
-registerVehicleCommandHandler.execute(new RegisterVehicleCommand("FW-360-CW", fleetCreated.getId()));
+fleetCommand.command('create').argument('<userId>', 'User id to create fleet for').action(async (userId) => {
+    const createFleetCommandHandler = new CreateFleetCommandHandler(fleetRepository);
+    const fleetCreated = await createFleetCommandHandler.execute(new CreateFleetCommand(userId));
+    console.log('Your fleet id is', fleetCreated.getId());
+});
 
-console.log('fleets', fleetRepository.findAll());
-console.log('users', userRepository.findAll());
+fleetCommand.command('register-vehicle')
+    .argument('<fleetId>', 'Fleet id where register vehicle')
+    .argument('<plateNumber>', 'Plate number of the vehicle')
+    .action(async (fleetId, plateNumber) => {
+        const registerVehicleCommandHandler = new RegisterVehicleCommandHandler(fleetRepository);
+        const registerVehicleCommand = new RegisterVehicleCommand(fleetId, plateNumber);
+        try {
+            await registerVehicleCommandHandler.execute(registerVehicleCommand);
+            console.log('Vehicle registered to fleet');
+        } catch (error) {
+            if (error instanceof FleetNotFoundException || error instanceof VehicleHasAlreadyBeenRegisteredException) {
+                console.error(error.message);
+                process.exit(1);
+            }
+            //Unexpected error
+            throw error;
+        }
+    }
+);
 
-const parkVehicleCommandHandler = new ParkVehicleCommandHandler(fleetRepository);
+fleetCommand.command('localize-vehicle')
+    .argument('<fleetId>', 'Fleet id where localize vehicle')
+    .argument('<plateNumber>', 'Plate number of the vehicle')
+    .argument('<latitude>', 'Latitude of the vehicle')
+    .argument('<longitude>', 'Longitude of the vehicle')
+    .argument('<altitude>', 'Altitude of the vehicle')
+    .action(async (fleetId, plateNumber, latitude, longitude, altitude) => {
+        const parkVehicleCommandHandler = new ParkVehicleCommandHandler(fleetRepository);
+        const parkVehicleCommand = new ParkVehicleCommand(fleetId, plateNumber, latitude, longitude, altitude);
+        try {
+            await parkVehicleCommandHandler.execute(parkVehicleCommand);
+            console.log('Vehicle localized');
+        } catch (error) {
+            if (error instanceof FleetNotFoundException || error instanceof VehicleHasAlreadyBeenParkedHere) {
+                console.error(error.message);
+                process.exit(1);
+            }
+            //Unexpected error
+            throw error;
+        }
+    });
 
-parkVehicleCommandHandler.execute(
-    new ParkVehicleCommand(
-        fleetCreated.getId(), 
-        "FW-360-CW",
-         10, 10, 10
-        )
-    );
-
-parkVehicleCommandHandler.execute(
-    new ParkVehicleCommand(
-        fleetCreated.getId(), 
-        "FW-360-CW",
-            10, 10, 10
-        )
-    );
-
-console.log('fleets after parked', fleetRepository.findAll().forEach(fleet => {
-    console.log('fleet', fleet.getId(), fleet.getVehicles());
-}));
+program.parse(process.argv);

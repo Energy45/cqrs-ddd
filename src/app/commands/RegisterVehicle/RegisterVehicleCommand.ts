@@ -2,8 +2,8 @@ import { Command } from "../../../domain/Command";
 
 export class RegisterVehicleCommand extends Command {
     public constructor(
-        private readonly plateNumber: string,
         private readonly fleetId: string,
+        private readonly plateNumber: string,
     ) {
         super();
     }
