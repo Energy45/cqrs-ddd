@@ -6,9 +6,9 @@ import { CreateUserCommand } from "./CreateUserCommand";
 export class CreateUserCommandHandler implements ICommandHandler<CreateUserCommand, User> {
     constructor(private readonly userRepository: IRepository<User>) {}
 
-    execute(command: CreateUserCommand) {
+    async execute(command: CreateUserCommand): Promise<User> {
         const user = new User();
-        this.userRepository.save(user);
+        await this.userRepository.save(user);
         return user;
     }
 }

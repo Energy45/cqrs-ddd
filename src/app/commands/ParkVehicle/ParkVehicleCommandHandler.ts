@@ -6,8 +6,8 @@ import { Location } from "../../../domain/core/Location";
 export class ParkVehicleCommandHandler implements ICommandHandler<ParkVehicleCommand, void> {
     constructor(private readonly fleetRepository: IFleetRepository) {}
 
-    execute(command: ParkVehicleCommand): void {
-        const fleet = this.fleetRepository.findById(command.getFleetId());
+    async execute(command: ParkVehicleCommand): Promise<void> {
+        const fleet = await this.fleetRepository.findById(command.getFleetId());
         if (!fleet) {
             throw new Error("Fleet not found");
         }

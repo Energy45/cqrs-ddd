@@ -8,15 +8,15 @@ import type { IUserRepository } from "../../../domain/repository/IUserRepository
 export class CreateFleetCommandHandler implements ICommandHandler<CreateFleetCommand, Fleet> {
     constructor(private readonly userRepository: IUserRepository, private readonly fleetRepository: IFleetRepository) {}
 
-    execute(command: CreateFleetCommand) {
-        const user = this.userRepository.findById(command.getUserId());
+    async execute(command: CreateFleetCommand): Promise<Fleet> {
+        const user = await this.userRepository.findById(command.getUserId());
         if (!user) {
             throw new Error("User not found");
         }
         const fleet = new Fleet();
         user.setFleet(fleet);
-        this.userRepository.save(user);
-        this.fleetRepository.save(fleet);
+        await this.userRepository.save(user);
+        await this.fleetRepository.save(fleet);
         return fleet;
     }
 }
